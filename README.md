@@ -27,3 +27,21 @@ Settings
 To use the AMPR Portal API, you need to set an API key via your AMPR Portal
 Profile. Once you have set your API key, save your username and API key in
 `settings.py`.
+
+
+updateros.py
+=============
+
+Requests the list of encap routes from the AMPR Portal API, then updates the
+target Mikrotik router with new, removed, or changed routes.
+
+Usage
+-----
+
+	./updateros.py [-v] [-n] [-f] TARGET_IP
+
+`-f` force. Continue even when sanity check fails.
+
+`-n` dry-run. No changes will be made to target router.
+
+`-v` verbose mode. Commands to target router will be printed.
