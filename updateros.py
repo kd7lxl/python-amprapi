@@ -34,7 +34,7 @@ hamwan_gateways = ["198.178.136.80", "209.189.196.68"]
 
 def get_encap():
     ampr = amprapi.AMPRAPI()
-    return [("%(network)s/%(netmask)s" % entry, entry['gatewayIP']) for entry in ampr.encap]
+    return [("%(network)s/%(maskLength)s" % entry, entry['gatewayIP']) for entry in ampr.encap]
 
 
 def parse_ros_route(line):
