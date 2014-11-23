@@ -37,22 +37,6 @@ def get_encap():
     return [("%(network)s/%(netmask)s" % entry, entry['gatewayIP']) for entry in ampr.encap]
 
 
-def parse_encap(line):
-    if line.startswith("#"):
-        return False
-
-    route, addprivate, dstaddress, encap, gateway = line.split(" ")
-    dstaddress = expand_cidr(dstaddress)
-    gateway = gateway.strip()
-    if (route, addprivate, encap) != ("route", "addprivate", "encap"):
-        raise ValueError("Unknown line format:", line)
-
-    if (dstaddress in hamwan_dstaddresses) or (gateway in hamwan_gateways):
-        return False
-
-    return (dstaddress, gateway)
-
-
 def parse_ros_route(line):
     dstaddress, gateway = None, None
     for field in line.split(" "):
