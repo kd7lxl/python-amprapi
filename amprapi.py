@@ -25,11 +25,17 @@ import UserDict
 import settings
 
 
-class EncapObject(UserDict.UserDict):
+class EncapEntry(UserDict.UserDict):
     def __init__(self, initial_data):
         UserDict.UserDict.__init__(self, initial_data)
         self.data['updated'] = datetime.strptime(
             self.data['updated'], "%Y-%m-%d %H:%M:%S")
+
+    def __hash__(self):
+        return id(self)
+
+    def network(self):
+        return "%(network)s/%(maskLength)s" % self.data
 
 
 class AMPRAPI:
@@ -51,7 +57,7 @@ class AMPRAPI:
     ...
     """
     _map = {
-        'encap': EncapObject,
+        'encap': EncapEntry,
     }
     _api_version = 'v1'
     _api_version_minor = "1.04"

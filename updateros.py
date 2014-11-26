@@ -18,6 +18,7 @@
 # along with python-amprapi.  If not, see <http://www.gnu.org/licenses/>.
 
 import amprapi
+from datetime import date
 import time
 import paramiko
 import socket
@@ -34,7 +35,7 @@ hamwan_gateways = ["198.178.136.80", "209.189.196.68"]
 
 def get_encap():
     ampr = amprapi.AMPRAPI()
-    return [("%(network)s/%(maskLength)s" % entry, entry['gatewayIP']) for entry in ampr.encap]
+    return ampr.encap
 
 
 def parse_ros_route(line):
@@ -91,7 +92,7 @@ def export_ros_ipip_interfaces(ssh):
 
 
 def main():
-    encap_routes = get_encap()
+    encap = get_encap()
 
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -101,14 +102,16 @@ def main():
         ros_ipips = export_ros_ipip_interfaces(ssh)
 
         unchanged = 0
-        routes_to_add = set(encap_routes)
+        routes_to_add = set(encap)
         routes_to_remove = set(ros_routes)
         ipips_to_remove = set(ros_ipips)
-        for (dstaddress, gateway) in encap_routes:
+        for entry in encap:
+            dstaddress = entry.network()
+            gateway = entry['gatewayIP']
             interface = "ampr-%s" % gateway
             if (dstaddress, interface) in ros_routes and \
                (interface, gateway) in ros_ipips:
-                routes_to_add.discard((dstaddress, gateway))
+                routes_to_add.discard(entry)
                 routes_to_remove.discard((dstaddress, interface))
                 ipips_to_remove.discard((interface, gateway))
                 unchanged += 1
@@ -132,10 +135,15 @@ def main():
 
         if routes_to_add:
             commands.append("# adding new and modified routes")
-        for dstaddress, interface in routes_to_add:
-            commands.append("/interface ipip add !keepalive clamp-tcp-mss=yes local-address=%s name=ampr-%s remote-address=%s" % (edge_router_ip, interface, interface))
-            commands.append("/ip route add dst-address=%s gateway=ampr-%s distance=30" % (dstaddress, interface))
-            commands.append("/ip neighbor discovery set ampr-%s discover=no" % (interface))
+        for entry in routes_to_add:
+            interface = "ampr-%s" % entry['gatewayIP']
+            commands.append("/interface ipip add !keepalive clamp-tcp-mss=yes "
+                "local-address=%s name=%s remote-address=%s comment=\"%s\"" % (
+                    edge_router_ip, interface, entry['gatewayIP'],
+                    "AMPR last updated %s, added %s" % (
+                        entry['updated'].date(), date.today())))
+            commands.append("/ip route add dst-address=%s gateway=%s distance=30" % (entry.network(), interface))
+            commands.append("/ip neighbor discovery set %s discover=no" % (interface))
 
         if "-v" in sys.argv:
             print "\n".join(commands)
