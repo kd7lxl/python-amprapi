@@ -2,3 +2,4 @@
 API_URL = 'https://portal.ampr.org/api/'
 API_USER = ''
 API_KEY = ''
+CHECK_VERSION = True

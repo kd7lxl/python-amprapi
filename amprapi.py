@@ -54,12 +54,25 @@ class AMPRAPI:
         'encap': EncapObject,
     }
     _api_version = 'v1'
+    _api_version_minor = "1.04"
 
     def __init__(self, url=settings.API_URL, user=settings.API_USER,
                  api_key=settings.API_KEY):
         self.url = url
         self.user = user
         self.api_key = api_key
+
+        if settings.CHECK_VERSION:
+            self.enforce_version()
+
+    def check_version(self):
+        return self._api_version_minor == self.get('version')['version']
+
+    def enforce_version(self):
+        if not self.check_version():
+            version = self.get('version')['version']
+            raise ValueError('Unknown API version: %s: %s' % (
+                version, self.get('changeLog')[version]))
 
     def get(self, endpoint):
         r = requests.get(self.url + self._api_version + '/' + endpoint,
