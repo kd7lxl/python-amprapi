@@ -29,13 +29,22 @@ ssh_port = 22
 username = None
 
 # blacklist BGP-announced networks with direct-routing agreements
-hamwan_dstaddresses = ["44.24.240.0/20", "44.103.0.0/19", "44.34.128.0/21"]
-hamwan_gateways = ["198.178.136.80", "209.189.196.68"]
+bgp_networks = [
+    "44.24.240.0/20",   # HamWAN Puget Sound
+    "44.34.128.0/21",   # HamWAN Memphis
+    "44.103.0.0/19",    # W8CMN Mi6WAN
+]
 
 
 def get_encap():
     ampr = amprapi.AMPRAPI()
     return ampr.encap
+
+
+def filter_encap(route):
+    if route.network() in bgp_networks:
+        return False
+    return route
 
 
 def parse_ros_route(line):
@@ -92,7 +101,7 @@ def export_ros_ipip_interfaces(ssh):
 
 
 def main():
-    encap = get_encap()
+    encap = filter(None, map(filter_encap, get_encap()))
 
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
