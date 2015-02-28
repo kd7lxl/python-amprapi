@@ -161,6 +161,8 @@ def main():
             for command in commands:
                 ssh.exec_command(command)
                 time.sleep(0.1)
+    except KeyboardInterrupt:
+        print "KeyboardInterrupt received, closing..."
     except UserWarning, e:
         print e
     except socket.timeout:
