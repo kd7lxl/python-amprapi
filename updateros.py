@@ -101,6 +101,11 @@ def export_ros_ipip_interfaces(ssh):
                             export_ros(ssh, "/interface ipip export")))
 
 
+def filter_ipip_ampr(ipips):
+    return filter(
+        lambda (interface, gateway): interface.startswith('ampr-'), ipips)
+
+
 def main():
     encap = filter(None, map(filter_encap, get_encap()))
 
@@ -114,7 +119,7 @@ def main():
         unchanged = 0
         routes_to_add = set(encap)
         routes_to_remove = set(ros_routes)
-        ipips_to_remove = set(ros_ipips)
+        ipips_to_remove = set(filter_ipip_ampr(ros_ipips))
         for entry in encap:
             dstaddress = entry.network()
             gateway = entry['gatewayIP']
