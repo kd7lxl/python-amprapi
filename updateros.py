@@ -141,7 +141,7 @@ def main():
         if ipips_to_remove:
             commands.append("# removing orphaned ipip interfaces")
         for interface, gateway in ipips_to_remove:
-            commands.append("/interface ipip remove [find name=%s]" % interface)
+            commands.append("/interface ipip remove %s" % interface)
 
         if routes_to_add:
             commands.append("# adding new and modified routes")
