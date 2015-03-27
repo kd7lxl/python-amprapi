@@ -1,6 +1,11 @@
 AMPR Portal API Python bindings
 ===============================
 
+Install Dependencies
+--------------------
+
+    sudo apt-get install python python-requests
+
 Usage
 -----
 
