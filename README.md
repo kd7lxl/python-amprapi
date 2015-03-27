@@ -6,6 +6,10 @@ Install Dependencies
 
     sudo apt-get install python python-requests
 
+or
+
+    sudo pip install requests
+
 Usage
 -----
 
