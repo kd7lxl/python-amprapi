@@ -86,7 +86,7 @@ class AMPRAPI:
         if r.status_code == 200:
             return json.loads(r.text)
         elif r.status_code == 404:
-            raise NotImplementedError(r.json())
+            raise NotImplementedError(r.text)
         else:
             raise Exception(r.text)
 
