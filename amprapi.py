@@ -60,7 +60,7 @@ class AMPRAPI:
         'encap': EncapEntry,
     }
     _api_version = 'v1'
-    _api_version_minor = "1.04"
+    _api_version_minor = "1.07"
 
     def __init__(self, url=settings.API_URL, user=settings.API_USER,
                  api_key=settings.API_KEY):
@@ -84,7 +84,7 @@ class AMPRAPI:
         r = requests.get(self.url + self._api_version + '/' + endpoint,
                          auth=(self.user, self.api_key))
         if r.status_code == 200:
-            return json.loads(r.json())
+            return json.loads(r.text)
         elif r.status_code == 404:
             raise NotImplementedError(r.json())
         else:
