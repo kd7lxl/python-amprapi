@@ -49,7 +49,7 @@ class AMPRAPI:
     >>> import amprapi
     >>> ampr = amprapi.AMPRAPI()
     >>> for entry in ampr.encap:
-    ...     print "%(network)s/%(netmask)s via %(gatewayIP)s" % entry
+    ...     print "%(network)s/%(maskLength)s via %(gatewayIP)s" % entry
     ...
     44.151.22.22/32 via 2.10.28.74
     44.182.69.0/24 via 5.15.186.251
@@ -97,4 +97,4 @@ class AMPRAPI:
 if __name__ == "__main__":
     ampr = AMPRAPI()
     for entry in ampr.encap:
-        print "%(network)s/%(netmask)s via %(gatewayIP)s" % entry
+        print "%(network)s/%(maskLength)s via %(gatewayIP)s" % entry
