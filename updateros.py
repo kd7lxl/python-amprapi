@@ -152,7 +152,7 @@ def main():
             commands.append("# adding new and modified routes")
         for entry in routes_to_add:
             interface = "ampr-%s" % entry['gatewayIP']
-            commands.append("/interface ipip add !keepalive clamp-tcp-mss=yes "
+            commands.append("/interface ipip add !keepalive clamp-tcp-mss=yes allow-fast-path=yes "
                 "local-address=%s name=%s remote-address=%s comment=\"%s\"" % (
                     edge_router_ip, interface, entry['gatewayIP'],
                     "AMPR last updated %s, added %s" % (
